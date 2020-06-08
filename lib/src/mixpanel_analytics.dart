@@ -49,6 +49,9 @@ class MixpanelAnalytics {
   // If exists, will be sent in the event, otherwise anonymousId will be used.
   Stream<String> _userId$;
 
+  // These are additional headers that will be sent with every request
+  Map<String, String> _headers;
+
   // Stores the value of the userId
   String _userId;
 
@@ -120,6 +123,7 @@ class MixpanelAnalytics {
     ShaFn shaFn,
     bool verbose,
     Function onError,
+    Map<String, String> headers,
   }) {
     _token = token;
     _userId$ = userId$;
@@ -129,6 +133,8 @@ class MixpanelAnalytics {
     _shaFn = shaFn ?? _defaultShaFn;
 
     _userId$?.listen((id) => _userId = id);
+
+    _headers = headers ?? <String, String>{};
   }
 
   /// Provides an instance of this class.
@@ -361,9 +367,11 @@ class MixpanelAnalytics {
   Future<bool> _sendEvent(String event, String op) async {
     var url = '$baseApi/$op/?data=$event&verbose=${_verbose ? 1 : 0}';
     try {
-      var response = await http.get(url, headers: {
+      final headers = <String, String>{
         'Content-type': 'application/json',
-      });
+      }..addAll(_headers);
+
+      var response = await http.get(url, headers: headers);
       return response.statusCode == 200 &&
           _validateResponseBody(url, response.body);
     } on Exception catch (error) {
@@ -380,11 +388,15 @@ class MixpanelAnalytics {
   Future<bool> _sendBatch(String batch, String op) async {
     var url = '$baseApi/$op/?verbose=${_verbose ? 1 : 0}';
     try {
-      var response = await http.post(url, headers: {
+      final headers = <String, String>{
         'Content-type': 'application/x-www-form-urlencoded',
-      }, body: {
-        'data': batch
-      });
+      }..addAll(_headers);
+
+      var response = await http.post(
+        url,
+        headers: headers,
+        body: {'data': batch},
+      );
       return response.statusCode == 200 &&
           _validateResponseBody(url, response.body);
     } on Exception catch (error) {
