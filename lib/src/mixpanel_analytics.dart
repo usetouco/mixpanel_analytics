@@ -368,7 +368,7 @@ class MixpanelAnalytics {
     var url = '$baseApi/$op/?data=$event&verbose=${_verbose ? 1 : 0}';
     try {
       final headers = <String, String>{
-        'Content-type': 'application/json',
+        'Content-Type': 'application/json',
       }..addAll(_headers);
 
       var response = await http.get(url, headers: headers);
@@ -389,7 +389,7 @@ class MixpanelAnalytics {
     var url = '$baseApi/$op/?verbose=${_verbose ? 1 : 0}';
     try {
       final headers = <String, String>{
-        'Content-type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/x-www-form-urlencoded',
       }..addAll(_headers);
 
       var response = await http.post(
