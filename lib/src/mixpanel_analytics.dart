@@ -367,9 +367,7 @@ class MixpanelAnalytics {
   Future<bool> _sendEvent(String event, String op) async {
     var url = '$baseApi/$op/?data=$event&verbose=${_verbose ? 1 : 0}';
     try {
-      final headers = <String, String>{
-        'Content-Type': 'application/json',
-      }..addAll(_headers);
+      final headers = <String, String>{}..addAll(_headers);
 
       var response = await http.get(url, headers: headers);
       return response.statusCode == 200 &&
@@ -388,9 +386,7 @@ class MixpanelAnalytics {
   Future<bool> _sendBatch(String batch, String op) async {
     var url = '$baseApi/$op/?verbose=${_verbose ? 1 : 0}';
     try {
-      final headers = <String, String>{
-        'Content-Type': 'application/x-www-form-urlencoded',
-      }..addAll(_headers);
+      final headers = <String, String>{}..addAll(_headers);
 
       var response = await http.post(
         url,
